@@ -1,0 +1,4 @@
+const CLIENT_ID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
+const CLIENT_SECRET = import.meta.env.VITE_REACT_APP_CLIENT_SECRET;
+
+export {CLIENT_ID, CLIENT_SECRET};
