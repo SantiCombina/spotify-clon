@@ -31,6 +31,36 @@ const getToken = async (): Promise<string | null> => {
     }
 };
 
+const getArtists = async (searchTerm: string) => {
+    try {
+        const accessToken = await getToken();
+
+        if (!accessToken) {
+            alert("No se pudo obtener el token");
+
+            return null;
+        }
+
+        const response = await fetch(
+            `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchTerm)}&type=artist`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            },
+        );
+
+        const data = await response.json();
+
+        return data.artists.items;
+    } catch (error) {
+        alert("Error buscando los artistas");
+
+        return null;
+    }
+};
+
 const getArtist = async (artistId: string) => {
     try {
         const accessToken = await getToken();
@@ -58,4 +88,4 @@ const getArtist = async (artistId: string) => {
     }
 };
 
-export default {getToken, getArtist};
+export default {getToken, getArtists, getArtist};

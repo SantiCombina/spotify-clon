@@ -1,42 +1,18 @@
-import {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 
-import apiController from "@/controllers/api-controller";
+import {Button} from "@/components/ui/button";
 
 export function Home() {
-    const [token, setToken] = useState<string | null>(null);
-    const [artist, setArtist] = useState<any>(null);
-
-    const fetchToken = async () => {
-        const accessToken = await apiController.getToken();
-
-        setToken(accessToken);
+    const navigate = useNavigate();
+    const logout = () => {
+        localStorage.removeItem("spotify_token");
+        navigate("/login");
     };
-
-    const fetchArtist = async (artistId: string) => {
-        const artistData = await apiController.getArtist(artistId);
-
-        setArtist(artistData);
-    };
-
-    useEffect(() => {
-        fetchToken();
-        fetchArtist("0TnOYISbd1XYRBk9myaseg");
-    }, []);
 
     return (
-        <div className="flex flex-col gap-4">
-            <span>Hola Mundo !</span>
-
-            <span>{token ? `El token es: ${token}` : "Cargando token..."}</span>
-
-            {artist ? (
-                <div>
-                    <h2>{artist.name}</h2>
-                    <img alt={artist.name} src={artist.images[0]?.url} width={200} />
-                </div>
-            ) : (
-                <span>Cargando artista...</span>
-            )}
+        <div className="flex flex-col items-center justify-center h-[calc(100vh-6rem)] gap-2">
+            <Link to={"/artists"}>Artistas</Link>
+            <Button onClick={logout}>Salir</Button>
         </div>
     );
 }
