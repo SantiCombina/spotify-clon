@@ -30,8 +30,10 @@ export function Login() {
     }, [navigate]);
 
     return (
-        <div className="min-h-[100dvh] bg-[#000000] text-[#FFFFFF] flex flex-col justify-center items-center custom-scrollbar">
-            <Button onClick={fetchToken}>Conectar a Spotify</Button>
+        <div className="h-[100dvh] bg-black text-white flex flex-col justify-center items-center p-2">
+            <Button className="text-xl bg-green-500 hover:bg-green-500/90 px-14 py-7" onClick={fetchToken}>
+                Conectar a Spotify
+            </Button>
         </div>
     );
 }

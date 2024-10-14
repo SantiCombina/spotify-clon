@@ -1,4 +1,4 @@
-import { CLIENT_ID, CLIENT_SECRET } from "@/config/config";
+import {CLIENT_ID, CLIENT_SECRET} from "@/config/config";
 
 let token: string | null = null;
 
@@ -6,6 +6,7 @@ const getToken = async (): Promise<string | null> => {
     if (token) return token;
 
     const params = new URLSearchParams();
+
     params.append("grant_type", "client_credentials");
 
     try {
@@ -19,11 +20,14 @@ const getToken = async (): Promise<string | null> => {
         });
 
         const data = await response.json();
+
         token = data.access_token;
 
         return token;
     } catch (error) {
         alert("Error obteniendo el token");
+        console.error("Error obteniendo el token", error);
+
         return null;
     }
 };
@@ -34,6 +38,7 @@ const getArtists = async (searchTerm: string) => {
 
         if (!accessToken) {
             alert("No se pudo obtener el token");
+
             return null;
         }
 
@@ -44,13 +49,15 @@ const getArtists = async (searchTerm: string) => {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
-            }
+            },
         );
 
         const data = await response.json();
+
         return data.artists.items;
     } catch (error) {
         alert("Error buscando los artistas");
+
         return null;
     }
 };
@@ -61,6 +68,7 @@ const getArtist = async (artistId: string) => {
 
         if (!accessToken) {
             alert("No se pudo obtener el token");
+
             return null;
         }
 
@@ -74,14 +82,17 @@ const getArtist = async (artistId: string) => {
         if (!response.ok) {
             console.error("Error en la respuesta de la API", response);
             alert("Error obteniendo los datos del artista");
+
             return null;
         }
 
         const data = await response.json();
+
         return data;
     } catch (error) {
         console.error("Error al obtener el artista", error);
         alert("Error obteniendo el artista");
+
         return null;
     }
 };
@@ -92,6 +103,7 @@ const getAlbumsByArtist = async (artistId: string) => {
 
         if (!accessToken) {
             alert("No se pudo obtener el token");
+
             return null;
         }
 
@@ -103,20 +115,22 @@ const getAlbumsByArtist = async (artistId: string) => {
         });
 
         const data = await response.json();
+
         return data.items;
     } catch (error) {
         alert("Error obteniendo los álbumes");
+
         return null;
     }
 };
 
-// Mueve getAlbumDetails fuera de getAlbumsByArtist
 const getAlbumDetails = async (albumId: string) => {
     try {
         const accessToken = await getToken();
 
         if (!accessToken) {
             alert("No se pudo obtener el token");
+
             return null;
         }
 
@@ -130,16 +144,19 @@ const getAlbumDetails = async (albumId: string) => {
         if (!response.ok) {
             console.error("Error en la respuesta de la API", response);
             alert("Error obteniendo los detalles del álbum");
+
             return null;
         }
 
         const data = await response.json();
+
         return data;
     } catch (error) {
         console.error("Error al obtener los detalles del álbum", error);
         alert("Error obteniendo los detalles del álbum");
+
         return null;
     }
 };
 
-export default { getToken, getArtists, getArtist, getAlbumsByArtist, getAlbumDetails };
+export default {getToken, getArtists, getArtist, getAlbumsByArtist, getAlbumDetails};

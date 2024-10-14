@@ -1,24 +1,34 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input";
+import {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
+
+import {Input} from "@/components/ui/input";
+import {useFavorites} from "@/context/favoritesContext";
 import apiController from "@/controllers/api-controller";
-import { useDebounce } from "@/hooks/use-debounce";
-import { useFavorites } from "@/context/favoritesContext";
+import {useDebounce} from "@/hooks/use-debounce";
+import {Button} from "@/components/ui/button";
 
 export function Artist() {
     const [artists, setArtists] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
     const navigate = useNavigate();
-    const { favoriteArtists, toggleFavorite } = useFavorites();
+
+    const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+    const {favoriteArtists, toggleFavorite} = useFavorites();
 
     const fetchArtists = async (term: string) => {
         const artistsData = await apiController.getArtists(term);
+
         if (artistsData) {
             setArtists(artistsData);
         } else {
             alert("No se encontraron artistas");
         }
+    };
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
     };
 
     useEffect(() => {
@@ -29,30 +39,24 @@ export function Artist() {
         }
     }, [debouncedSearchTerm]);
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value);
-    };
-
     return (
-        <div className="flex gap-4 max-h-[calc(100vh-6rem)]">
-            <div className="flex-1">
-                <div className="flex justify-center"> {/* Contenedor para centrar */}
-                    <Input
-                        className="bg-[#1F1F1F] cursor-pointer hover:bg-[#2A2A2A] rounded-3xl border-0 max-w-[474px] min-h-[48px]"
-                        placeholder="Buscar artista"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                    />
-                </div>
-                
-                <div className="bg-[#121212] overflow-auto rounded-lg p-6 flex flex-col w-full mt-4">
+        <div className="flex gap-2 max-h-[calc(100vh-6rem)] w-full">
+            <div className="flex flex-col items-center flex-1 gap-2">
+                <Input
+                    className="bg-[#1F1F1F] placeholder:text-[#B3B3B3] text-base px-6 cursor-pointer hover:bg-[#2A2A2A] rounded-3xl border-0 max-w-[474px] min-h-[48px]"
+                    placeholder="Buscar artista"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+
+                <div className="bg-[#121212] overflow-auto rounded-lg flex flex-col w-full h-screen p-4">
                     <div className="flex flex-wrap justify-center">
                         {artists.length > 0 ? (
                             artists.map((artist) => (
                                 <div
                                     key={artist.id}
-                                    onClick={() => navigate(`/artist-detail/${artist.id}`)}
                                     className="p-3 rounded-lg cursor-pointer hover:bg-[#1E1E1E] flex flex-col items-center gap-2"
+                                    onClick={() => navigate(`/artist-detail/${artist.id}`)}
                                 >
                                     <img
                                         alt={artist.name}
@@ -62,47 +66,48 @@ export function Artist() {
                                         width={160}
                                     />
                                     <span className="max-w-[160px] flex text-left w-full">{artist.name}</span>
-                                    
-                                    <button
+
+                                    <Button
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             toggleFavorite(artist);
                                         }}
-                                        className="mt-2 bg-[#1DB954] text-white font-semibold py-1 px-2 rounded-lg hover:bg-[#1AAE3D] transition-colors duration-200"
                                     >
-                                        {favoriteArtists.some(fav => fav.id === artist.id) ? "Eliminar de Favoritos" : "Agregar a Favoritos"}
-                                    </button>
+                                        {favoriteArtists.some((fav) => fav.id === artist.id)
+                                            ? "Eliminar de Favoritos"
+                                            : "Agregar a Favoritos"}
+                                    </Button>
                                 </div>
                             ))
                         ) : (
-                            <span>No se encontraron artistas</span>
+                            <span className="text-[#B3B3B3]">No se encontraron artistas</span>
                         )}
                     </div>
                 </div>
             </div>
-    
-            <div className="bg-[#121212] p-4 rounded-lg w-1/4">
-                <h2 className="text-xl font-semibold">Artistas Favoritos</h2>
-                <div className="flex flex-wrap">
+
+            <div className="bg-[#121212] flex flex-col p-4 rounded-lg max-h-[calc(100vh-6rem)] mt-14">
+                <span className="text-xl font-semibold sticky top-0 bg-[#121212] p-2">Artistas Favoritos</span>
+                <div className="flex flex-col items-center overflow-auto">
                     {favoriteArtists.length > 0 ? (
-                        favoriteArtists.map(favArtist => (
+                        favoriteArtists.map((favArtist) => (
                             <div
                                 key={favArtist.id}
+                                className="p-3 rounded-lg cursor-pointer hover:bg-[#1E1E1E] w-fit flex flex-col items-center gap-2"
                                 onClick={() => navigate(`/artist-detail/${favArtist.id}`)}
-                                className="p-3 rounded-lg cursor-pointer hover:bg-[#1E1E1E] flex flex-col items-center gap-2"
                             >
                                 <img
                                     alt={favArtist.name}
-                                    className="object-cover rounded-full max-w-[80px] max-h-[80px]"
-                                    height={80}
+                                    className="object-cover rounded-full max-w-[100px] max-h-[100px]"
+                                    height={100}
                                     src={favArtist.images[0]?.url}
-                                    width={80}
+                                    width={100}
                                 />
-                                <span className="max-w-[80px] flex text-left w-full">{favArtist.name}</span>
+                                <span className="max-w-[100px] flex text-left w-full">{favArtist.name}</span>
                             </div>
                         ))
                     ) : (
-                        <span>No hay artistas favoritos</span>
+                        <span className="text-[#B3B3B3]">No hay artistas favoritos</span>
                     )}
                 </div>
             </div>

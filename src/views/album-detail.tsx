@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useParams, useNavigate} from "react-router-dom";
+
 import apiController from "@/controllers/api-controller";
-import { useFavorites } from "@/context/favoritesContext";
+import {useFavorites} from "@/context/favoritesContext";
+import {Button} from "@/components/ui/button";
 
 export function AlbumDetail() {
-    const { albumId } = useParams<{ albumId: string }>();
-    const navigate = useNavigate();
     const [album, setAlbum] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const { favoriteSongs, toggleFavoriteSong } = useFavorites(); 
+
+    const navigate = useNavigate();
+    const {favoriteSongs, toggleFavoriteSong} = useFavorites();
+    const {albumId} = useParams<{albumId: string}>();
 
     useEffect(() => {
         const fetchAlbumData = async () => {
@@ -16,6 +19,7 @@ export function AlbumDetail() {
             if (albumId) {
                 try {
                     const data = await apiController.getAlbumDetails(albumId);
+
                     setAlbum(data);
                 } catch (error) {
                     console.error("Error fetching album details:", error);
@@ -28,48 +32,62 @@ export function AlbumDetail() {
     }, [albumId]);
 
     if (loading) {
-        return <div className="text-white text-center">Cargando...</div>;
+        return <div className="text-center">Cargando...</div>;
     }
 
     if (!album) {
-        return <div className="text-white text-center">No se pudo cargar la información del álbum.</div>;
+        return <div className="text-center">No se pudo cargar la información del álbum.</div>;
     }
 
-    const { name: albumName, artists, tracks } = album;
+    const {name: albumName, artists, tracks} = album;
 
     return (
-        <div className="bg-[#121212] text-white min-h-screen p-6">
-            <h1 className="text-3xl font-bold mb-4">{albumName || "Nombre no disponible"}</h1>
-            <h2 className="text-xl font-semibold mb-2">Artista(s): {artists.map((artist: any) => artist.name).join(", ")}</h2>
-            <Link to="/favorite-songs">
-                <button className="bg-[#1DB954] text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-[#1AAE3D] transition-colors duration-200">
+        <div className="bg-[#121212] rounded-lg flex flex-col p-6 overflow-auto h-[calc(100vh-6rem)] gap-2">
+            <div className="flex items-center gap-4">
+                <img
+                    alt={albumName || "Álbum desconocido"}
+                    className="rounded-lg"
+                    src={album.images && album.images.length > 0 ? album.images[0].url : "/path/to/default-image.png"}
+                    width={200}
+                />
+                <div className="flex flex-col gap-4">
+                    <span className="text-6xl font-extrabold">{albumName || "Nombre no disponible"}</span>
+
+                    <span className="font-semibold">{artists.map((artist: any) => artist.name).join(", ")}</span>
+                </div>
+            </div>
+            <div className="flex gap-4">
+                <Button variant={"secondary"} onClick={() => navigate("/favorite-songs")}>
                     Canciones Favoritas
-                </button>
-            </Link>
-            <h3 className="text-xl font-semibold mb-2">Temas:</h3>
-            <ul className="list-disc pl-5">
+                </Button>
+                <Button variant={"secondary"} onClick={() => navigate(`/artist-detail/${artists[0].id}`)}>
+                    Volver al artista
+                </Button>
+            </div>
+            <span className="text-xl font-semibold">Temas:</span>
+            <ul className="flex flex-col gap-1">
                 {tracks.items.map((track: any) => (
-                    <li key={track.id} className="mb-1 flex justify-between">
-                        {track.name || "Nombre no disponible"} 
-                        <button
-                            onClick={() => toggleFavoriteSong({
-                                id: track.id, name: track.name, artist: artists[0].name, albumId: album.id,
-                                albumName: albumName
-                            })}
-                            className="text-[#1DB954] ml-2"
+                    <li key={track.id} className="flex items-center justify-between">
+                        {track.name || "Nombre no disponible"}
+                        <Button
+                            className="text-[#1DB954]"
+                            onClick={() =>
+                                toggleFavoriteSong({
+                                    id: track.id,
+                                    name: track.name,
+                                    artist: artists[0].name,
+                                    albumId: album.id,
+                                    albumName: albumName,
+                                })
+                            }
                         >
-                            {favoriteSongs.some(fav => fav.id === track.id) ? "Eliminar de Favoritos" : "Agregar a Favoritos"}
-                        </button>
+                            {favoriteSongs.some((fav) => fav.id === track.id)
+                                ? "Eliminar de Favoritos"
+                                : "Agregar a Favoritos"}
+                        </Button>
                     </li>
                 ))}
             </ul>
-
-            <button
-                onClick={() => navigate(`/artist-detail/${artists[0].id}`)}
-                className="mt-4 bg-[#1DB954] text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-[#1AAE3D] transition-colors duration-200"
-            >
-                Volver al artista
-            </button>
         </div>
     );
 }

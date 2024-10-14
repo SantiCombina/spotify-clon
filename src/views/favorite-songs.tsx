@@ -1,29 +1,28 @@
-import { useFavorites } from "@/context/favoritesContext";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+
+import {useFavorites} from "@/context/favoritesContext";
+import {Button} from "@/components/ui/button";
 
 export function FavoriteSongs() {
-    const { favoriteSongs } = useFavorites();
     const navigate = useNavigate();
 
+    const {favoriteSongs} = useFavorites();
+
     if (favoriteSongs.length === 0) {
-        return <div className="text-white text-center">No tienes canciones favoritas.</div>;
+        return <div className="text-center">No tienes canciones favoritas.</div>;
     }
 
     return (
-        <div className="bg-[#121212] text-white min-h-screen p-6">
-            <h1 className="text-3xl font-bold mb-4">Canciones Favoritas</h1>
-            <ul className="list-disc pl-5">
+        <div className="bg-[#121212] rounded-lg flex flex-col p-6 overflow-auto h-[calc(100vh-6rem)]">
+            <span className="mb-4 text-3xl font-bold">Canciones Favoritas</span>
+            <ul className="flex flex-col gap-1">
                 {favoriteSongs.map((song) => (
-                    <li key={song.id} className="mb-2 flex justify-between items-center">
+                    <li key={song.id} className="flex items-center justify-between">
                         <div>
-                            <strong>{song.name}</strong> - {song.artist} (Álbum: {song.albumName || "Nombre no disponible"})
+                            <strong>{song.name}</strong> - {song.artist} (Álbum:{" "}
+                            {song.albumName || "Nombre no disponible"})
                         </div>
-                        <button
-                            onClick={() => navigate(`/album-detail/${song.albumId}`)} // Navegar a la vista del álbum
-                            className="text-[#1DB954] ml-2"
-                        >
-                            Ver Álbum
-                        </button>
+                        <Button onClick={() => navigate(`/album-detail/${song.albumId}`)}>Ver Álbum</Button>
                     </li>
                 ))}
             </ul>
