@@ -1,97 +1,54 @@
-# Boilerplate Vite + React + Tailwind
+# Spotify Clone
 
-This boilerplate is based on [Vite](https://vitejs.dev/) and [React](https://reactjs.org/) with [Tailwind CSS](https://tailwindcss.com/).
+Este proyecto es una aplicación desarrollada en React y TypeScript que simula la funcionalidad básica de Spotify, permitiendo buscar artistas, agregar a favoritos y navegar por los detalles de cada uno. La aplicación utiliza la API de Spotify para obtener información en tiempo real.
 
-## Extensions recommended:
+## Objetivo
 
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-- [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
-- [Error Lens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens)
+El objetivo de esta aplicación es demostrar la capacidad para implementar funcionalidades avanzadas en React, como el manejo de rutas, estado global, y el consumo de APIs externas.
 
-## Project setup
+## Requisitos Técnicos Generales
 
-1- Clone the repository
+- **Componentes:**
+  - La aplicación está dividida en varios componentes reutilizables, como `Artist`, `ArtistDetail`, y otros elementos como el campo de búsqueda y los botones de favoritos.
+  
+- **Context API:**
+  - Se utiliza Context API para gestionar el estado global, específicamente para manejar la lista de artistas favoritos en la aplicación.
 
-2- Install dependencies
+- **React Router:**
+  - Implementa `React Router` para gestionar la navegación entre las distintas vistas de la aplicación, como la vista de detalles del artista.
 
-```
-npm install
-```
+## Requisitos Técnicos Específicos
 
-3- Run the project
+- **Búsqueda de artistas:**
+  - La aplicación permite buscar artistas a través de un campo de búsqueda que está vinculado a la API de Spotify. Los resultados se muestran en una lista de tarjetas con los nombres e imágenes de los artistas.
 
-```
-npm run dev
-```
+- **Artistas favoritos:**
+  - Los usuarios pueden agregar o eliminar artistas de su lista de favoritos, que se guarda en el estado global. Los favoritos se muestran en un contenedor dedicado en la interfaz.
 
-## Project architecture
+- **Detalles del artista:**
+  - Al hacer clic en un artista, se navega a una vista de detalles que incluye más información sobre el artista y sus álbumes.
 
-```
-├── public 
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   ├── fontawesome
-│   │   |   ├── css
-│   │   |   └── webfonts
-│   │   └── images
-│   ├── components
-│   │   ├── layout
-│   │   └── ui
-│   ├── controllers
-│   ├── hooks
-│   ├── services
-│   |   ├── axios-service.ts
-│   |   ├── config.ts
-│   │   ├── fetch-service.ts
-|   |   ├── headers-service.ts
-|   |   └── http-client.ts
-│   ├── types
-│   │   └── services
-|   |       └── types.ts
-│   ├── views
-│   ├── App.tsx
-│   ├── index.jsx
-│   └── main.tsx
-├── .eslintrc.js
-├── .gitignore
-├── .env
-├── index.html
-├── package.json
-├── postcss.config.js
-├── README.md
-├── tailwind.config.js
-├── tsconfig.json
-└── vite.config.js
-```
+- **Estilos:**
+  - La aplicación utiliza Tailwind CSS para los estilos, lo que facilita la personalización y el diseño responsivo.
 
-## Project configuration
+## Funcionalidades Implementadas
 
-### Environment variables
+- **Búsqueda dinámica:**
+  - Los resultados de búsqueda se actualizan automáticamente conforme el usuario escribe, gracias a la implementación de un debounced input, que optimiza las llamadas a la API.
 
-Create a `.env` file in the root of the project.
+- **Sistema de favoritos:**
+  - Los usuarios pueden agregar o eliminar artistas de su lista de favoritos con un solo clic. Estos favoritos se guardan en un estado global manejado por Context API.
 
-### Watch mode
+- **Navegación con rutas:**
+  - Se utiliza React Router para navegar entre las diferentes vistas, como la lista de artistas y la página de detalles de cada uno.
 
-Make sure don't have `errors` on the `wath mode` after push your code to the repository.
+## Librerías Utilizadas
 
-### ESLint
+- **Tailwind CSS:** para los estilos de la interfaz.
+- **Lucide React:** para los íconos.
+- **React Router:** para la navegación entre páginas.
+- **Spotify API:** para obtener los datos de los artistas en tiempo real.
 
-Make sure don't have `errors` on the `eslint` after push your code to the repository.
+## Despliegue
 
-## Absolute imports
-
-You can import your `components`, `hooks`, `services`, `types`, `views`, etc. with absolute paths.
-
-```
-import { Button } from '@/components/ui/button';
-```
-
-
-
-
-
-
-
-
+La aplicación está desplegada en Vercel. Puedes probar la aplicación directamente desde este enlace: [Spotify Clone](https://spotify-clon-nine.vercel.app)
